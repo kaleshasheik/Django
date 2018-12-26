@@ -10,6 +10,7 @@ class CustomAccountManager(BaseUserManager):
         user.is_staff = False
         user.is_superuser = False
         user.save(using=self._db)
+
         return user
 
     def create_superuser(self, email, password):
@@ -22,7 +23,7 @@ class CustomAccountManager(BaseUserManager):
         return user
 
     def get_by_natural_key(self, email_):
-        print(email_)
+
         return self.get(email=email_)
 
 
@@ -34,7 +35,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     designation = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=13, null=False)
     created_on = models.DateTimeField(auto_now_add=True)
-    last_login_on = models.DateTimeField(auto_now_add=True)
     must_change_password = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
