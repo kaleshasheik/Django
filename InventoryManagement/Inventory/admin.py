@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from rest_framework.authtoken.models import Token
 
 from .models import CustomUser
 
@@ -26,12 +27,12 @@ class UserCreationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match")
         return password2
 
-    def save(self, commit=True):
+    def save(self):
         # Save the provided password in hashed format
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
+        user.save()
+        Token.objects.create(user=user)
         return user
 
 
@@ -47,9 +48,7 @@ class UserChangeForm(forms.ModelForm):
         fields = ('email', 'password', 'contact_number', 'employee_id', 'name', 'designation', 'is_staff', )
 
     def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
+
         return self.initial["password"]
 
 
