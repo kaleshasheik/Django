@@ -6,6 +6,8 @@ from .views import *
 urlpatterns = [
 
     path('api/login', login),
-    path('api/addUser', user)
+    path('api/addUser', user),
+
+    path('api/fetchInventoryTypes', inventorytypes)
 
 ]

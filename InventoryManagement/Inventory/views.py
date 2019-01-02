@@ -1,25 +1,16 @@
-from .serializers import UserSerializer
-
+from .serializers import UserSerializer, InventorySerailizer
 from rest_framework import status
-
-
 from django.contrib.auth import authenticate
-
-
 from rest_framework.authtoken.models import Token
-
 from rest_framework.decorators import api_view, permission_classes
-
 from rest_framework.permissions import AllowAny
-
 from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
     HTTP_200_OK
 )
-
 from rest_framework.response import Response
-
+from . import models
 
 
 @api_view(['PUT', 'POST', 'GET', 'DELETE'])
@@ -40,12 +31,18 @@ def user(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def inventorytypes(request):
+    queryset = models.Inventory.objects.all()
+    serializer = InventorySerailizer(queryset, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def login(request):
-    username = request.data.get("email")
 
+    username = request.data.get("email")
     password = request.data.get("password")
 
     if username is None or password is None:
@@ -64,7 +61,13 @@ def login(request):
 
     token, _ = Token.objects.get_or_create(user=user)
 
-    return Response({'token': token.key},
+    queryset = models.CustomUser.objects.filter(email=user)
+
+    serializer = UserSerializer(queryset, many=True)
+
+    user_details = {'user': serializer.data, 'token': token.key}
+
+    return Response(user_details,
 
                     status=HTTP_200_OK)
 

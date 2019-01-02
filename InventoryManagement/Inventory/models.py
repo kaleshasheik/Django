@@ -36,7 +36,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     contact_number = models.CharField(max_length=13, null=False)
     created_on = models.DateTimeField(auto_now_add=True)
     must_change_password = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
@@ -64,8 +64,10 @@ class Roles(models.Model):
 
 
 class Inventory(models.Model):
-    id = models.IntegerField(primary_key=True)
-    product_type = models.CharField(max_length=500)
+      product_type = models.CharField(max_length=500)
+
+      class Meta:
+          db_table = 'Inventory_Types'
 
 
 class Status(models.Model):

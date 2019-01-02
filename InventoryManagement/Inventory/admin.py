@@ -7,6 +7,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from rest_framework.authtoken.models import Token
 
 from .models import CustomUser
+from .models import Roles
 
 
 class UserCreationForm(forms.ModelForm):
@@ -80,6 +81,7 @@ class UserAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(CustomUser, UserAdmin)
+admin.site.register(Roles)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 
